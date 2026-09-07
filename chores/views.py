@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
-from .forms import ChoreClaimForm, ChoreForm
+from .forms import ChoreClaimForm, ChoreCompletionForm, ChoreForm
 from .models import Chore
 
 
@@ -52,5 +52,38 @@ def chore_claim(request, chore_id):
     return render(
         request,
         "chores/chore_claim.html",
+        {"chore": chore, "form": form},
+    )
+
+
+def chore_complete(request, chore_id):
+    chore = get_object_or_404(Chore, pk=chore_id)
+
+    if chore.status != Chore.Status.CLAIMED:
+        messages.error(request, "Only a claimed chore can be completed.")
+        return redirect("chores:list")
+
+    if request.method == "POST":
+        form = ChoreCompletionForm(request.POST)
+        if form.is_valid():
+            updated = Chore.objects.filter(
+                pk=chore.pk,
+                status=Chore.Status.CLAIMED,
+            ).update(
+                completed_by=form.cleaned_data["name"],
+                completed_at=timezone.now(),
+                status=Chore.Status.COMPLETED,
+            )
+            if updated:
+                messages.success(request, "Chore completed successfully.")
+            else:
+                messages.error(request, "This chore can no longer be completed.")
+            return redirect("chores:list")
+    else:
+        form = ChoreCompletionForm()
+
+    return render(
+        request,
+        "chores/chore_complete.html",
         {"chore": chore, "form": form},
     )
