@@ -7,7 +7,25 @@
 <body>
     <main>
         <h1>Chores</h1>
-        <p>The chore list will be added in Task #3.</p>
+        <p><a href="{% url 'chores:create' %}">Create a chore</a></p>
+
+        {% if chores %}
+            <ul>
+                {% for chore in chores %}
+                    <li>
+                        <h2>{{ chore.title }}</h2>
+                        <p>{{ chore.description }}</p>
+                        <p>Due: {{ chore.due_date }}</p>
+                        <p>Status: {{ chore.get_status_display }}</p>
+                        {% if chore.status == "Unclaimed" %}
+                            <p><strong>Available to claim</strong></p>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No chores have been created yet.</p>
+        {% endif %}
     </main>
 </body>
 </html>

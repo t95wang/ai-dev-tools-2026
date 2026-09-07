@@ -1,11 +1,12 @@
 from django.shortcuts import redirect, render
 
 from .forms import ChoreForm
+from .models import Chore
 
 
 def chore_list(request):
-    """Minimal redirect target; the chore list is implemented in Task #3."""
-    return render(request, "chores/chore_list.html")
+    chores = Chore.objects.order_by("due_date", "title")
+    return render(request, "chores/chore_list.html", {"chores": chores})
 
 
 def chore_create(request):
