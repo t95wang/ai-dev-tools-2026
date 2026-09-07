@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Claim {{ chore.title }}</title>
+</head>
+<body>
+    <main>
+        <h1>Claim {{ chore.title }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Claim chore</button>
+        </form>
+        <p><a href="{% url 'chores:list' %}">Back to chores</a></p>
+    </main>
+</body>
+</html>

@@ -9,6 +9,14 @@
         <h1>Chores</h1>
         <p><a href="{% url 'chores:create' %}">Create a chore</a></p>
 
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
         {% if chores %}
             <ul>
                 {% for chore in chores %}
@@ -19,6 +27,9 @@
                         <p>Status: {{ chore.get_status_display }}</p>
                         {% if chore.status == "Unclaimed" %}
                             <p><strong>Available to claim</strong></p>
+                            <p><a href="{% url 'chores:claim' chore.id %}">Claim this chore</a></p>
+                        {% elif chore.status == "Claimed" %}
+                            <p>Claimed by: {{ chore.claimed_by }}</p>
                         {% endif %}
                     </li>
                 {% endfor %}

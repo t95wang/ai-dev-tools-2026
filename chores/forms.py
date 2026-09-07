@@ -10,3 +10,7 @@ class ChoreForm(forms.ModelForm):
         widgets = {
             "due_date": forms.DateInput(attrs={"type": "date"}),
         }
+
+
+class ChoreClaimForm(forms.Form):
+    name = forms.CharField(label="Your name", max_length=100)
